@@ -2,6 +2,8 @@
 
 DynamicDiet is an app that changes your diet requirements as you progress and meet your goals. As a user, you will be able to track your daily calories and log your weight change progress. As you get closer and closer to your goals, the app will change your daily caloric intake to ensure that you reach that weight goal.
 ### 2) Storyboard
+https://www.figma.com/file/osIMLBdzWFm4a5e7lnkKaY/DynamicDiet?node-id=2%3A27
+
 ### 3) Functional Requirements 
 **Requirement 01: Track calories**
 
