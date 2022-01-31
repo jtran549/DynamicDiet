@@ -56,9 +56,11 @@ DynamicDiet is an app that changes your diet requirements as you progress and me
 
 
 ### 6) Scrum Roles
-DevOps/Product owner/Git master: Jimmy Tran
-Frontend developer:
-Backend developer: Justin Tracy, David Herier
+**DevOps/Product owner/Git master:** Jimmy Tran
+
+**Frontend developer:**
+
+**Backend developer:** Justin Tracy, David Herier
 ### 7) Meetings in discord at 8pm Sunday
 
 
