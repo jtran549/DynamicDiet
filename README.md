@@ -36,10 +36,23 @@ DynamicDiet is an app that changes your diet requirements as you progress and me
 
 
 ### 4) Class Diagram
-Show data classes (DTOs), Activities, Fragments, MVVM, etc.
-I use ArgoUML to model classes in a diagram.  Other tools work as well.
+![image](https://user-images.githubusercontent.com/31493216/151727610-b3a7e80f-cda8-463c-bed4-76c3d6f3403c.png)
+
+
 ### 5) Class Diagram Description
-One or two lines for each class to describe  use of interfaces, JME classes, Dalvik (Android) classes and resources, interfaces, etc.  Don't worry about putting more than a few words to each class; this does not need to be thorough.
+**MainActivity** - The first screen that the user sees when opening the application
+
+**DietDetail** - The page of the application that displays diet requirements for the day
+
+**Person** - Class that represents an application user
+
+**Diet** - Class that represents the user's diet.  Includes calorie goal for the day
+
+**IPersonDAO** - Interface to retrieve and parse Person data in JSON
+
+**IDietDAO** - Interface to calculate diet/calorie goals
+
+**AppDatabase** - Used to format and store/fetch Person and Diet data from the applications database
 
 
 ### 6) Scrum Roles
