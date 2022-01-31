@@ -4,22 +4,36 @@ DynamicDiet is an app that changes your diet requirements as you progress and me
 ### 2) Storyboard
 ### 3) Functional Requirements 
 **Requirement 01: Track calories**
+
 **Scenario**: As a user who wishes to lose weight, I want to be able to track the calories that I consume each day so that I can be below my caloric need
+
 **Given** the user tracks their food correctly,
+
 **When** they enter that they ate a chicken breast,
+
 **Then** the result should be Chicken: 180 cals
 
 **Requirement 02: Track weight**
+
 **Scenario:** As a user who wishes to lose weight, I want to be able to track my weight each morning so that I know I am making progress
+
 **Given** the user weighs themselves accurately and consistently
+
 **When** the user inputs their weight
+
 **Then** the application will take and store the entry so the user can see their progress
 
+
 **Requirement 03: Take progress pictures**
+
 **Scenario**: As a user that wishes to track my progress, I want to be able to have a set of pictures I can use to gauge my progress 
+
 **Given** the phone has a camera and the user utilizes it
+
 **When** the user takes a progress picture
+
 **Then** the app should save it so the user can look back at it
+
 
 ### 4) Class Diagram
 Show data classes (DTOs), Activities, Fragments, MVVM, etc.
