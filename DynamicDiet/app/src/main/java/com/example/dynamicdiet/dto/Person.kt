@@ -1,5 +1,5 @@
 //person class with a constructor
 
-class Person(var name: String, var currentWeight: int, var past: List<int>, var diet: String)
+class Person(var name: String, var currentWeight: Int, var past: List<Int>, var diet: String){
 
 }
