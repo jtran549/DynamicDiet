@@ -1,0 +1,5 @@
+interface IDietDao {
+    fun getDietInfo() {
+
+    }
+}
