@@ -11,7 +11,7 @@ class DietService {
 
     }
 
-    suspend fun deletePerson(){
+    suspend fun deleteDiet(){
 
     }
 }
