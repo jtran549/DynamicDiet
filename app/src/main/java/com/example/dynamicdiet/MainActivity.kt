@@ -63,7 +63,7 @@ fun Greeting(
                 text = "Welcome, $name",
                 style = MaterialTheme.typography.h2
             )
-            DefaultPreview()
+
         }
     }
 }
