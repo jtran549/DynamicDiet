@@ -80,9 +80,13 @@ fun SimpleFilledTextFieldSample() {
             .padding(15.dp)
     ) {
         Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(MaterialTheme.colors.background)
+                .padding(15.dp),
             verticalArrangement = Arrangement.Center
         ) {
-            TextField(
+            OutlinedTextField(
                 value = text,
                 onValueChange = { text = it },
                 label = { Text("Weight") }
