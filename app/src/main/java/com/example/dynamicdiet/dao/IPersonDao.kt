@@ -1,6 +1,6 @@
 //person DAO fill out more with when connection to data becomes a thing
 
-interface ICountryDao {
+interface IPersonDao {
 
     //@GET("/person/info")
     suspend fun getPersonInfo(): Person
