@@ -5,8 +5,8 @@ class DietService {
      * @param userId id of the user
      * @return Diet object
      */
-    suspend fun getDietInfo(var userId: Int): Diet {
-        return Diet('Keto Diet', 2000);
+    suspend fun getDietInfo(userId: Int): Diet {
+        return Diet("Keto Diet", 2000);
     }
 
     /**
@@ -17,7 +17,7 @@ class DietService {
      * @param caloriesPerDay The number of calories per day set for the diet
      * @return newly created Diet object
      */
-    suspend fun createDiet(var userId: Int, var name: String, var caloriesPerDay: Int): Diet {
+    suspend fun createDiet( userId: Int,  name: String,  caloriesPerDay: Int) {
 
     }
 
@@ -29,7 +29,7 @@ class DietService {
      * @param caloriesPerDay The number of calories per day set for the diet
      * @return newly updated Diet object
      */
-    suspend fun updateDiet(var userId: Int, var name: String, var caloriesPerDay: Int): Diet {
+    suspend fun updateDiet( userId: Int,  name: String,  caloriesPerDay: Int) {
 
     }
 
