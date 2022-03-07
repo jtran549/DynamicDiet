@@ -1,4 +1,4 @@
-interface ICountryDao {
+interface IDietDao {
     fun getDietInfo(): Diet {
 
     }

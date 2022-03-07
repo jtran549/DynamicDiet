@@ -6,7 +6,7 @@ class DietService {
      * @return Diet object
      */
     suspend fun getDietInfo(var userId: Int): Diet {
-        return Diet('Keto Diet', 2000);
+        return Diet("Keto Diet", 2000);
     }
 
     /**
