@@ -1,5 +1,5 @@
-interface ICountryDao {
-    fun getDietInfo(): Diet {
+interface IDietDao { // Changed it from ICountryDao to IDietDao.
+    fun getDietInfo() {
 
     }
 
