@@ -36,8 +36,7 @@ class MainActivity : ComponentActivity() {
                             modifier = Modifier.fillMaxSize(),
                             color = MaterialTheme.colors.background
                         ) {
-                            Greeting("Justin")
-                            SimpleFilledTextFieldSample()
+                            DefaultPreview()
                         }
                     }
                 }
@@ -64,10 +63,7 @@ fun Greeting(
                 text = "Welcome, $name",
                 style = MaterialTheme.typography.h2
             )
-            Text(
-                text = "We wish you have a good day!",
-                style = MaterialTheme.typography.body1
-            )
+
         }
     }
 }
@@ -84,9 +80,13 @@ fun SimpleFilledTextFieldSample() {
             .padding(15.dp)
     ) {
         Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(MaterialTheme.colors.background)
+                .padding(15.dp),
             verticalArrangement = Arrangement.Center
         ) {
-            TextField(
+            OutlinedTextField(
                 value = text,
                 onValueChange = { text = it },
                 label = { Text("Weight") }
@@ -94,6 +94,21 @@ fun SimpleFilledTextFieldSample() {
         }
     }
 }
+
+@Preview(showBackground = true)
+@Composable
+fun DefaultPreview(){
+    DynamicDietTheme{
+        Surface(
+            color = MaterialTheme.colors.background,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Greeting("Justin")
+            SimpleFilledTextFieldSample()
+        }
+    }
+}
+
 
 
 
