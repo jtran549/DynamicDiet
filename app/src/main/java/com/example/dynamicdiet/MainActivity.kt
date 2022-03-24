@@ -15,6 +15,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -28,16 +29,15 @@ class MainActivity : ComponentActivity() {
                 Box(
                     modifier = Modifier
                         .background(Color.Blue)
-                        .fillMaxSize()
+                       // .fillMaxSize()
                 ) {
                     Column {
                         // A surface container using the 'background' color from the theme
                         Surface(
-                            modifier = Modifier.fillMaxSize(),
+                            //modifier = Modifier.fillMaxSize(),
                             color = MaterialTheme.colors.background
                         ) {
-                            Greeting("Justin")
-                            SimpleFilledTextFieldSample()
+                            InputWeight()
                         }
                     }
                 }
@@ -47,53 +47,30 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun Greeting(
-    name: String = "Justin"
-) {
-    Row(
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.Top,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(15.dp)
-    ) {
-        Column(
-            verticalArrangement = Arrangement.Center
-        ) {
-            Text(
-                text = "Welcome, $name",
-                style = MaterialTheme.typography.h2
-            )
-            Text(
-                text = "We wish you have a good day!",
-                style = MaterialTheme.typography.body1
-            )
+fun InputWeight() {
+    var weightInput by remember { mutableStateOf("")}
+    var context = LocalContext.current
+    Column {
+        Row{
+            Column{
+                OutlinedTextField(
+                    value = weightInput,
+                    onValueChange = {weightInput = it},
+                    label = {Text(stringResource(R.string.weight))}
+                )
+            }
+            Column{
+                Button (
+                    onClick = {
+                        Toast.makeText(context, "$weightInput", Toast.LENGTH_LONG).show()
+                    },
+                    content = {Text(text = stringResource(R.string.submit))}
+                )
+            }
         }
     }
 }
 
-@Composable
-fun SimpleFilledTextFieldSample() {
-    var text by remember { mutableStateOf("Enter your weight") }
-
-    Row(
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(15.dp)
-    ) {
-        Column(
-            verticalArrangement = Arrangement.Center
-        ) {
-            TextField(
-                value = text,
-                onValueChange = { text = it },
-                label = { Text("Weight") }
-            )
-        }
-    }
-}
 
 
 
