@@ -9,13 +9,35 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreSettings
 
 class MainViewModel(var weightService: WeightService = WeightService()) : ViewModel() {
-    var weights : MutableLiveData<List<Weight>> = MutableLiveData<List<Weight>>()
+    var weights = ArrayList<Weight>()
 
     private lateinit var firestore : FirebaseFirestore
 
     init {
         firestore = FirebaseFirestore.getInstance()
         firestore.firestoreSettings = FirebaseFirestoreSettings.Builder().build()
+        listenToWeightEntries()
+    }
+
+    private fun listenToWeightEntries() {
+        firestore.collection("weight").addSnapshotListener {
+            snapshot, e ->
+            if(e != null) {
+                Log.w("Listen failed", e)
+                return@addSnapshotListener
+            }
+            snapshot?.let {
+                var allWeightEntries = ArrayList<Weight>()
+                val documents = snapshot.documents
+                documents.forEach {
+                    val weight = it.toObject(Weight::class.java)
+                    weight?.let {
+                        allWeightEntries.add(it)
+                    }
+                }
+                weights = allWeightEntries
+            }
+        }
     }
 
     fun fetchWeightEntries(){

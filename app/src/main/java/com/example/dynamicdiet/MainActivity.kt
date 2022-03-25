@@ -26,23 +26,33 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class MainActivity : ComponentActivity() {
+
+    val viewModel = MainViewModel()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
+            val weightEntries = ArrayList<Weight>()
+            weightEntries.add(Weight(weight = 165.0, date = "03-25-2022"))
             DynamicDietTheme {
                 Box(
                     modifier = Modifier
                         .background(Color.Blue)
                        // .fillMaxSize()
                 ) {
-                    Column {
-                        // A surface container using the 'background' color from the theme
-                        Surface(
-                            //modifier = Modifier.fillMaxSize(),
-                            color = MaterialTheme.colors.background
-                        ) {
-                            InputWeight()
+                    Row (horizontalArrangement  =  Arrangement.SpaceEvenly){
+                        Column {
+                            // A surface container using the 'background' color from the theme
+                            Surface(
+                                //modifier = Modifier.fillMaxSize(),
+                                color = MaterialTheme.colors.background
+                            ) {
+                                InputWeight()
+                            }
                         }
+                    }
+                    Row (horizontalArrangement = Arrangement.SpaceEvenly){
+                        DisplayWeightEntries(weightEntries)
                     }
                 }
             }
@@ -75,6 +85,20 @@ fun InputWeight() {
                     },
                     content = {Text(text = stringResource(R.string.submit))}
                 )
+            }
+        }
+    }
+}
+
+@Composable
+fun DisplayWeightEntries(weightEntries : ArrayList<Weight>) {
+    for (weightEntry in weightEntries) {
+        Row {
+            Column{
+                Text("${weightEntry.date}: ")
+            }
+            Column{
+                Text("${weightEntry.weight}lbs")
             }
         }
     }
