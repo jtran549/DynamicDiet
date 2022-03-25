@@ -19,7 +19,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.example.dynamicdiet.dto.Weight
 import com.example.dynamicdiet.ui.theme.DynamicDietTheme
+import java.util.*
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -62,6 +64,8 @@ fun InputWeight() {
             Column{
                 Button (
                     onClick = {
+                        var weight = Weight(weight = weightInput.toDouble(), date = Date()).apply {
+                        }
                         Toast.makeText(context, "$weightInput", Toast.LENGTH_LONG).show()
                     },
                     content = {Text(text = stringResource(R.string.submit))}
