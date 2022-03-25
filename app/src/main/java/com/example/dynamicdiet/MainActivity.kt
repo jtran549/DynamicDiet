@@ -19,6 +19,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.ViewModel
 import com.example.dynamicdiet.dto.Weight
 import com.example.dynamicdiet.ui.theme.DynamicDietTheme
 import java.util.*
@@ -52,6 +53,7 @@ class MainActivity : ComponentActivity() {
 fun InputWeight() {
     var weightInput by remember { mutableStateOf("")}
     var context = LocalContext.current
+    val viewModel = MainViewModel()
     Column {
         Row{
             Column{
@@ -66,7 +68,7 @@ fun InputWeight() {
                     onClick = {
                         var weight = Weight(weight = weightInput.toDouble(), date = Date()).apply {
                         }
-                        Toast.makeText(context, "$weightInput", Toast.LENGTH_LONG).show()
+                        viewModel.save(weight = weight)
                     },
                     content = {Text(text = stringResource(R.string.submit))}
                 )
