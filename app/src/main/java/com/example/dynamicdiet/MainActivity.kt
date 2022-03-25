@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import com.example.dynamicdiet.dto.Weight
 import com.example.dynamicdiet.ui.theme.DynamicDietTheme
+import java.text.SimpleDateFormat
 import java.util.*
 
 class MainActivity : ComponentActivity() {
@@ -53,6 +54,8 @@ class MainActivity : ComponentActivity() {
 fun InputWeight() {
     var weightInput by remember { mutableStateOf("")}
     var context = LocalContext.current
+    val simpleDateFormat = SimpleDateFormat("MM-dd-yyy");
+    val datetime = simpleDateFormat.format(Date())
     val viewModel = MainViewModel()
     Column {
         Row{
@@ -66,7 +69,7 @@ fun InputWeight() {
             Column{
                 Button (
                     onClick = {
-                        var weight = Weight(weight = weightInput.toDouble(), date = Date()).apply {
+                        var weight = Weight(weight = weightInput.toDouble(), date = datetime).apply {
                         }
                         viewModel.save(weight = weight)
                     },
