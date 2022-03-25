@@ -15,30 +15,44 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.ViewModel
+import com.example.dynamicdiet.dto.Weight
 import com.example.dynamicdiet.ui.theme.DynamicDietTheme
+import java.text.SimpleDateFormat
+import java.util.*
 
 class MainActivity : ComponentActivity() {
+
+    val viewModel = MainViewModel()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
+            val weightEntries = ArrayList<Weight>()
+            weightEntries.add(Weight(weight = 165.0, date = "03-25-2022"))
             DynamicDietTheme {
                 Box(
                     modifier = Modifier
                         .background(Color.Blue)
-                        .fillMaxSize()
+                       // .fillMaxSize()
                 ) {
-                    Column {
-                        // A surface container using the 'background' color from the theme
-                        Surface(
-                            modifier = Modifier.fillMaxSize(),
-                            color = MaterialTheme.colors.background
-                        ) {
-                            Greeting("Justin")
-                            SimpleFilledTextFieldSample()
+                    Row (horizontalArrangement  =  Arrangement.SpaceEvenly){
+                        Column {
+                            // A surface container using the 'background' color from the theme
+                            Surface(
+                                //modifier = Modifier.fillMaxSize(),
+                                color = MaterialTheme.colors.background
+                            ) {
+                                InputWeight()
+                            }
                         }
+                    }
+                    Row (horizontalArrangement = Arrangement.SpaceEvenly){
+                        DisplayWeightEntries(weightEntries)
                     }
                 }
             }
@@ -47,53 +61,49 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun Greeting(
-    name: String = "Justin"
-) {
-    Row(
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.Top,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(15.dp)
-    ) {
-        Column(
-            verticalArrangement = Arrangement.Center
-        ) {
-            Text(
-                text = "Welcome, $name",
-                style = MaterialTheme.typography.h2
-            )
-            Text(
-                text = "We wish you have a good day!",
-                style = MaterialTheme.typography.body1
-            )
+fun InputWeight() {
+    var weightInput by remember { mutableStateOf("")}
+    var context = LocalContext.current
+    val simpleDateFormat = SimpleDateFormat("MM-dd-yyy");
+    val datetime = simpleDateFormat.format(Date())
+    val viewModel = MainViewModel()
+    Column {
+        Row{
+            Column{
+                OutlinedTextField(
+                    value = weightInput,
+                    onValueChange = {weightInput = it},
+                    label = {Text(stringResource(R.string.weight))}
+                )
+            }
+            Column{
+                Button (
+                    onClick = {
+                        var weight = Weight(weight = weightInput.toDouble(), date = datetime).apply {
+                        }
+                        viewModel.save(weight = weight)
+                    },
+                    content = {Text(text = stringResource(R.string.submit))}
+                )
+            }
         }
     }
 }
 
 @Composable
-fun SimpleFilledTextFieldSample() {
-    var text by remember { mutableStateOf("Enter your weight") }
-
-    Row(
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(15.dp)
-    ) {
-        Column(
-            verticalArrangement = Arrangement.Center
-        ) {
-            TextField(
-                value = text,
-                onValueChange = { text = it },
-                label = { Text("Weight") }
-            )
+fun DisplayWeightEntries(weightEntries : ArrayList<Weight>) {
+    for (weightEntry in weightEntries) {
+        Row {
+            Column{
+                Text("${weightEntry.date}: ")
+            }
+            Column{
+                Text("${weightEntry.weight}lbs")
+            }
         }
     }
 }
+
 
 
 

@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">DynamicDiet</string>
+    <string name="weight">Weight</string>
+    <string name="submit">Submit</string>
 </resources>
