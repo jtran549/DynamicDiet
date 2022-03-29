@@ -35,11 +35,6 @@ class MainActivity : ComponentActivity() {
             val weightEntries = ArrayList<Weight>()
             weightEntries.add(Weight(weight = 165.0, date = "03-25-2022"))
             DynamicDietTheme {
-                Box(
-                    modifier = Modifier
-                        .background(Color.Blue)
-                       // .fillMaxSize()
-                ) {
                     Row (horizontalArrangement  =  Arrangement.SpaceEvenly){
                         Column {
                             // A surface container using the 'background' color from the theme
@@ -48,13 +43,11 @@ class MainActivity : ComponentActivity() {
                                 color = MaterialTheme.colors.background
                             ) {
                                 InputWeight()
+                                DisplayWeightEntries(weightEntries)
                             }
                         }
                     }
-                    Row (horizontalArrangement = Arrangement.SpaceEvenly){
-                        DisplayWeightEntries(weightEntries)
-                    }
-                }
+
             }
         }
     }
@@ -67,17 +60,20 @@ fun InputWeight() {
     val simpleDateFormat = SimpleDateFormat("MM-dd-yyy");
     val datetime = simpleDateFormat.format(Date())
     val viewModel = MainViewModel()
-    Column {
         Row{
-            Column{
+            Column(
+                Modifier
+                    .fillMaxSize()
+                    .padding(30.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
                 OutlinedTextField(
+                    modifier = Modifier.fillMaxWidth(),
                     value = weightInput,
                     onValueChange = {weightInput = it},
                     label = {Text(stringResource(R.string.weight))}
                 )
-            }
-            Column{
+                Spacer(modifier = Modifier.height(15.dp))
                 Button (
+                    modifier = Modifier.fillMaxWidth(),
                     onClick = {
                         var weight = Weight(weight = weightInput.toDouble(), date = datetime).apply {
                         }
@@ -87,17 +83,15 @@ fun InputWeight() {
                 )
             }
         }
-    }
 }
 
 @Composable
 fun DisplayWeightEntries(weightEntries : ArrayList<Weight>) {
     for (weightEntry in weightEntries) {
         Row {
-            Column{
+            Column (Modifier.fillMaxWidth().padding(30.dp)) {
                 Text("${weightEntry.date}: ")
-            }
-            Column{
+                Spacer(modifier = Modifier.height(10.dp))
                 Text("${weightEntry.weight}lbs")
             }
         }
