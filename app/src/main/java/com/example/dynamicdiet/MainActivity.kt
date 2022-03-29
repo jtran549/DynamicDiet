@@ -47,12 +47,12 @@ class MainActivity : ComponentActivity() {
                                 //modifier = Modifier.fillMaxSize(),
                                 color = MaterialTheme.colors.background
                             ) {
-                                InputWeight()
+                                inputWeight()
                             }
                         }
                     }
                     Row (horizontalArrangement = Arrangement.SpaceEvenly){
-                        DisplayWeightEntries(weightEntries)
+                        displayWeightEntries(weightEntries)
                     }
                 }
             }
@@ -61,7 +61,7 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun InputWeight() {
+fun inputWeight() {
     var weightInput by remember { mutableStateOf("")}
     var context = LocalContext.current
     val simpleDateFormat = SimpleDateFormat("MM-dd-yyy");
@@ -91,7 +91,7 @@ fun InputWeight() {
 }
 
 @Composable
-fun DisplayWeightEntries(weightEntries : ArrayList<Weight>) {
+fun displayWeightEntries(weightEntries : ArrayList<Weight>) {
     for (weightEntry in weightEntries) {
         Row {
             Column{
