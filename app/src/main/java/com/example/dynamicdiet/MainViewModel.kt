@@ -13,7 +13,7 @@ import com.google.firebase.firestore.FirebaseFirestoreSettings
 
 class MainViewModel(var weightService: WeightService = WeightService()) : ViewModel() {
     var weights = ArrayList<Weight>()
-
+    var weightEntries = ArrayList<Weight>()
     var weightInput by mutableStateOf("");
 
     fun onValueChange (value: String) {
@@ -29,7 +29,7 @@ class MainViewModel(var weightService: WeightService = WeightService()) : ViewMo
     }
 
     private fun listenToWeightEntries() {
-        firestore.collection("weight").addSnapshotListener {
+        firestore.collection("weightEntries").addSnapshotListener {
             snapshot, e ->
             if(e != null) {
                 Log.w("Listen failed", e)
@@ -50,7 +50,16 @@ class MainViewModel(var weightService: WeightService = WeightService()) : ViewMo
     }
 
     fun fetchWeightEntries(){
-
+        firestore.collection("weightEntries")
+            .get()
+            .addOnSuccessListener { result ->
+                for (document in result) {
+                    Log.d("Firebase", "${document.id} => ${document.data}")
+                }
+            }
+            .addOnFailureListener { exception ->
+                Log.d("Firebase", "Error getting documents: ", exception)
+            }
     }
 
     fun delete(id: Int){

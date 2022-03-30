@@ -7,6 +7,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -29,13 +30,13 @@ import java.util.*
 
 class MainActivity : ComponentActivity() {
 
-    val viewModel = MainViewModel()
+    var viewModel = MainViewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            val weightEntries = ArrayList<Weight>()
-            weightEntries.add(Weight(weight = 165.0, date = "03-25-2022"))
+//            val weightEntries = ArrayList<Weight>()
+            viewModel.weightEntries.add(Weight(weight = 165.0, date = "03-25-2022"))
             DynamicDietTheme {
                 val scaffoldState = rememberScaffoldState()
                 val scope = rememberCoroutineScope()
@@ -49,7 +50,7 @@ class MainActivity : ComponentActivity() {
                                 Scaffold(scaffoldState = scaffoldState) {
                                     InputWeight(viewModel = viewModel, scope, scaffoldState)
                                 }
-                                DisplayWeightEntries(weightEntries)
+                                DisplayWeightEntries(viewModel = viewModel)
                             }
                         }
                     }
@@ -82,7 +83,7 @@ fun InputWeight(viewModel: MainViewModel, scope:CoroutineScope, scaffoldState: S
                         var weight = Weight(weight = viewModel.weightInput.toDouble(), date = datetime).apply {
                         }
                         viewModel.save(weight = weight)
-                        scope.launch { scaffoldState.snackbarHostState.showSnackbar("Weight: ${viewModel.weightInput}") }
+                        scope.launch { scaffoldState.snackbarHostState.showSnackbar("Weight: ${viewModel.weightInput} Date: $datetime") }
                     },
                     content = {Text(text = stringResource(R.string.submit))}
                 )
@@ -91,8 +92,8 @@ fun InputWeight(viewModel: MainViewModel, scope:CoroutineScope, scaffoldState: S
 }
 
 @Composable
-fun DisplayWeightEntries(weightEntries : ArrayList<Weight>) {
-    for (weightEntry in weightEntries) {
+fun DisplayWeightEntries(viewModel: MainViewModel) {
+    for (weightEntry in viewModel.weightEntries) {
         Row {
             Column (
                 Modifier
@@ -105,7 +106,6 @@ fun DisplayWeightEntries(weightEntries : ArrayList<Weight>) {
         }
     }
 }
-
 
 
 
