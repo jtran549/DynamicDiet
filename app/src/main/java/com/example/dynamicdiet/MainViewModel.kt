@@ -29,7 +29,7 @@ class MainViewModel(var weightService: WeightService = WeightService()) : ViewMo
     }
 
     private fun listenToWeightEntries() {
-        firestore.collection("weightEntries").addSnapshotListener {
+        firestore.collection("weight").addSnapshotListener {
             snapshot, e ->
             if(e != null) {
                 Log.w("Listen failed", e)
