@@ -43,6 +43,12 @@ class MainViewModel(var weightService: WeightService = WeightService()) : ViewMo
     fun fetchWeightEntries(){
 
     }
+
+    fun delete(id: Int){
+        val document = firestore.collection("Users").document();
+        val task = document.delete();
+    }
+
     fun save(weight: Weight){
         val document = firestore.collection("weightEntries").document()
         val handle = document.set(weight)
