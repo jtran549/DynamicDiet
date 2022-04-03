@@ -12,7 +12,7 @@ import com.google.firebase.firestore.FirebaseFirestoreSettings
 
 class MainViewModel(var weightService: WeightService = WeightService()) : ViewModel() {
 
-    var weights: MutableLiveData<List<Weight>> = MutableLiveData<List<Weight>>()
+    var weights = ArrayList<Weight>()
 
     private lateinit var firestore : FirebaseFirestore
 

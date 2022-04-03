@@ -34,7 +34,6 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            val weights by viewModel.weights.observeAsState(initial = emptyList())
 
             val weightEntries = ArrayList<Weight>()
 
@@ -69,29 +68,33 @@ fun inputWeight() {
     var weightInput by remember { mutableStateOf("")}
     var context = LocalContext.current
     val simpleDateFormat = SimpleDateFormat("MM-dd-yyy");
-    val datetime = simpleDateFormat.format(Date())
+    var datetime = simpleDateFormat.format(Date())
     val viewModel = MainViewModel()
+
     Column {
-        Row{
-            Column{
-                OutlinedTextField(
-                    value = weightInput,
-                    onValueChange = {weightInput = it},
-                    label = {Text(stringResource(R.string.weight))}
-                )
-            }
-            Column{
-                Button (
-                    onClick = {
-                        var weight = Weight(weight = weightInput.toDouble(), date = datetime).apply {
-                        }
-                        viewModel.save(weight = weight)
-                    },
-                    content = {Text(text = stringResource(R.string.submit))}
-                )
-            }
-        }
+        OutlinedTextField(
+            value = weightInput,
+            onValueChange = { weightInput = it },
+            label = { Text(stringResource(R.string.weight)) },
+            modifier = Modifier.fillMaxWidth()
+        )
+        OutlinedTextField(
+            value = datetime,
+            onValueChange = { datetime = it },
+            label = { Text(stringResource(R.string.Date)) },
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        Button(
+            onClick = {
+                var weight = Weight(weight = weightInput.toDouble(), date = datetime).apply {
+                }
+                viewModel.save(weight = weight)
+            },
+            content = { Text(text = stringResource(R.string.submit)) }
+        )
     }
+
 }
 
 @Composable
