@@ -24,16 +24,19 @@ import com.example.dynamicdiet.dto.Weight
 import com.example.dynamicdiet.ui.theme.DynamicDietTheme
 import java.text.SimpleDateFormat
 import java.util.*
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : ComponentActivity() {
 
-    val viewModel = MainViewModel()
+    private val viewModel: MainViewModel by viewModel<MainViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
+            val weights by viewModel.weights.observeAsState(initial = emptyList())
+
             val weightEntries = ArrayList<Weight>()
-            weightEntries.add(Weight(weight = 165.0, date = "03-25-2022"))
+
             DynamicDietTheme {
                 Box(
                     modifier = Modifier

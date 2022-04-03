@@ -3,13 +3,16 @@ package com.example.dynamicdiet
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.dynamicdiet.dto.Weight
 import com.example.dynamicdiet.service.WeightService
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreSettings
 
+
 class MainViewModel(var weightService: WeightService = WeightService()) : ViewModel() {
-    var weights = ArrayList<Weight>()
+
+    var weights: MutableLiveData<List<Weight>> = MutableLiveData<List<Weight>>()
 
     private lateinit var firestore : FirebaseFirestore
 
