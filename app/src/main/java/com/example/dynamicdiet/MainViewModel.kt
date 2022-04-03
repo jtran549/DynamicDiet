@@ -1,15 +1,14 @@
 package com.example.dynamicdiet
 
 import android.util.Log
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.dynamicdiet.dto.Weight
+import com.example.dynamicdiet.dto.Entries
 import com.example.dynamicdiet.service.WeightService
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreSettings
 
 class MainViewModel(var weightService: WeightService = WeightService()) : ViewModel() {
-    var weights = ArrayList<Weight>()
+    var weights = ArrayList<Entries>()
 
     private lateinit var firestore : FirebaseFirestore
 
@@ -27,10 +26,10 @@ class MainViewModel(var weightService: WeightService = WeightService()) : ViewMo
                 return@addSnapshotListener
             }
             snapshot?.let {
-                var allWeightEntries = ArrayList<Weight>()
+                var allWeightEntries = ArrayList<Entries>()
                 val documents = snapshot.documents
                 documents.forEach {
-                    val weight = it.toObject(Weight::class.java)
+                    val weight = it.toObject(Entries::class.java)
                     weight?.let {
                         allWeightEntries.add(it)
                     }
@@ -49,9 +48,9 @@ class MainViewModel(var weightService: WeightService = WeightService()) : ViewMo
         val task = document.delete();
     }
 
-    fun save(weight: Weight){
+    fun save(entries: Entries){
         val document = firestore.collection("weightEntries").document()
-        val handle = document.set(weight)
+        val handle = document.set(entries)
         handle.addOnSuccessListener { Log.d("Firebase", "Document saved") }
         handle.addOnFailureListener{Log.e("Firebase", "Save failed $it ")}
     }
