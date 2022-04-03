@@ -9,6 +9,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -24,16 +25,18 @@ import com.example.dynamicdiet.dto.Weight
 import com.example.dynamicdiet.ui.theme.DynamicDietTheme
 import java.text.SimpleDateFormat
 import java.util.*
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : ComponentActivity() {
 
-    val viewModel = MainViewModel()
+    private val viewModel: MainViewModel by viewModel<MainViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
+
             val weightEntries = ArrayList<Weight>()
-            weightEntries.add(Weight(weight = 165.0, date = "03-25-2022"))
+
             DynamicDietTheme {
                 Box(
                     modifier = Modifier
@@ -47,12 +50,12 @@ class MainActivity : ComponentActivity() {
                                 //modifier = Modifier.fillMaxSize(),
                                 color = MaterialTheme.colors.background
                             ) {
-                                InputWeight()
+                                inputWeight()
                             }
                         }
                     }
                     Row (horizontalArrangement = Arrangement.SpaceEvenly){
-                        DisplayWeightEntries(weightEntries)
+                        displayWeightEntries(weightEntries)
                     }
                 }
             }
@@ -61,37 +64,41 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun InputWeight() {
+fun inputWeight() {
     var weightInput by remember { mutableStateOf("")}
     var context = LocalContext.current
     val simpleDateFormat = SimpleDateFormat("MM-dd-yyy");
-    val datetime = simpleDateFormat.format(Date())
+    var datetime = simpleDateFormat.format(Date())
     val viewModel = MainViewModel()
+
     Column {
-        Row{
-            Column{
-                OutlinedTextField(
-                    value = weightInput,
-                    onValueChange = {weightInput = it},
-                    label = {Text(stringResource(R.string.weight))}
-                )
-            }
-            Column{
-                Button (
-                    onClick = {
-                        var weight = Weight(weight = weightInput.toDouble(), date = datetime).apply {
-                        }
-                        viewModel.save(weight = weight)
-                    },
-                    content = {Text(text = stringResource(R.string.submit))}
-                )
-            }
-        }
+        OutlinedTextField(
+            value = weightInput,
+            onValueChange = { weightInput = it },
+            label = { Text(stringResource(R.string.weight)) },
+            modifier = Modifier.fillMaxWidth()
+        )
+        OutlinedTextField(
+            value = datetime,
+            onValueChange = { datetime = it },
+            label = { Text(stringResource(R.string.Date)) },
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        Button(
+            onClick = {
+                var weight = Weight(weight = weightInput.toDouble(), date = datetime).apply {
+                }
+                viewModel.save(weight = weight)
+            },
+            content = { Text(text = stringResource(R.string.submit)) }
+        )
     }
+
 }
 
 @Composable
-fun DisplayWeightEntries(weightEntries : ArrayList<Weight>) {
+fun displayWeightEntries(weightEntries : ArrayList<Weight>) {
     for (weightEntry in weightEntries) {
         Row {
             Column{
