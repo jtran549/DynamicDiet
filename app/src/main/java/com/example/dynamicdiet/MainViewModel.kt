@@ -20,10 +20,9 @@ class MainViewModel(var weightService: WeightService = WeightService()) : ViewMo
         weightInput = value;
     }
 
-    private lateinit var firestore : FirebaseFirestore
+    private var firestore : FirebaseFirestore = FirebaseFirestore.getInstance()
 
     init {
-        firestore = FirebaseFirestore.getInstance()
         firestore.firestoreSettings = FirebaseFirestoreSettings.Builder().build()
         listenToWeightEntries()
     }
