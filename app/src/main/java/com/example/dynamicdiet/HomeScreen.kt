@@ -10,6 +10,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.example.dynamicdiet.dto.Weight
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -20,7 +21,7 @@ var viewModel = MainViewModel()
 
 
 @Composable
-fun HomeScreen() {
+fun HomeScreen(navController: NavController) {
     val scaffoldState = rememberScaffoldState()
     val scope = rememberCoroutineScope()
     Row (horizontalArrangement  =  Arrangement.SpaceEvenly){
@@ -31,16 +32,18 @@ fun HomeScreen() {
                 color = MaterialTheme.colors.background
             ) {
                 Scaffold(scaffoldState = scaffoldState) {
-                    InputWeight(viewModel = viewModel, scope, scaffoldState)
+                    InputWeight(viewModel = viewModel, scope, scaffoldState, navController = navController)
                 }
                 DisplayWeightEntries(viewModel = viewModel)
+//                Spacer(modifier = Modifier.height(15.dp))
+//                DetailsNavButton(navController)
             }
         }
     }
 }
 
 @Composable
-fun InputWeight(viewModel: MainViewModel, scope: CoroutineScope, scaffoldState: ScaffoldState) {
+fun InputWeight(viewModel: MainViewModel, scope: CoroutineScope, scaffoldState: ScaffoldState, navController: NavController) {
     var context = LocalContext.current
     val simpleDateFormat = SimpleDateFormat("MM-dd-yyy");
     val datetime = simpleDateFormat.format(Date())
@@ -66,6 +69,14 @@ fun InputWeight(viewModel: MainViewModel, scope: CoroutineScope, scaffoldState: 
                 },
                 content = { Text(text = stringResource(R.string.submit)) }
             )
+            Spacer(modifier = Modifier.height(15.dp))
+            Button(
+                modifier = Modifier.fillMaxWidth(),
+                onClick = {
+                    navController.navigate(Screen.Details.route)
+                },
+                content = { Text(text = "View your weight log") }
+            )
         }
     }
 }
@@ -86,3 +97,19 @@ fun DisplayWeightEntries(viewModel: MainViewModel) {
     }
 }
 
+@Composable
+fun DetailsNavButton(navController: NavController) {
+    Column(
+        Modifier
+            .fillMaxSize()
+            .padding(30.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center)
+    {
+        Button(
+            modifier = Modifier.fillMaxWidth(),
+            onClick = {
+                navController.navigate(Screen.Details.route)
+            },
+            content = { Text(text = "View your weight log") }
+        )
+    }
+}
