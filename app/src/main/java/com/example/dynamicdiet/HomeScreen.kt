@@ -34,7 +34,7 @@ fun HomeScreen(navController: NavController) {
                 Scaffold(scaffoldState = scaffoldState) {
                     InputWeight(viewModel = viewModel, scope, scaffoldState, navController = navController)
                 }
-                DisplayWeightEntries(viewModel = viewModel)
+//                DisplayWeightEntries(viewModel = viewModel)
 //                Spacer(modifier = Modifier.height(15.dp))
 //                DetailsNavButton(navController)
             }
@@ -81,21 +81,21 @@ fun InputWeight(viewModel: MainViewModel, scope: CoroutineScope, scaffoldState: 
     }
 }
 
-@Composable
-fun DisplayWeightEntries(viewModel: MainViewModel) {
-    for (weightEntry in viewModel.weightEntries) {
-        Row {
-            Column (
-                Modifier
-                    .fillMaxWidth()
-                    .padding(30.dp)) {
-                Text("${weightEntry.date}: ")
-                Spacer(modifier = Modifier.height(10.dp))
-                Text("${weightEntry.weight}lbs")
-            }
-        }
-    }
-}
+//@Composable
+//fun DisplayWeightEntries(viewModel: MainViewModel) {
+//    for (weightEntry in viewModel.weightEntries) {
+//        Row {
+//            Column (
+//                Modifier
+//                    .fillMaxWidth()
+//                    .padding(30.dp)) {
+//                Text("${weightEntry.date}: ")
+//                Spacer(modifier = Modifier.height(10.dp))
+//                Text("${weightEntry.weight}lbs")
+//            }
+//        }
+//    }
+//}
 
 @Composable
 fun DetailsNavButton(navController: NavController) {
@@ -109,7 +109,7 @@ fun DetailsNavButton(navController: NavController) {
             onClick = {
                 navController.navigate(Screen.Details.route)
             },
-            content = { Text(text = "View your weight log") }
+            content = { Text(text = "View your weight log", style = MaterialTheme.typography.h1) }
         )
     }
 }
