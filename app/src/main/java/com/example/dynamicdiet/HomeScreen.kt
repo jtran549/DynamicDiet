@@ -5,8 +5,10 @@ import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -20,6 +22,7 @@ import java.util.*
 var viewModel = MainViewModel()
 
 
+@ExperimentalComposeUiApi
 @Composable
 fun HomeScreen(navController: NavController) {
     val scaffoldState = rememberScaffoldState()
@@ -42,9 +45,11 @@ fun HomeScreen(navController: NavController) {
     }
 }
 
+@ExperimentalComposeUiApi
 @Composable
 fun InputWeight(viewModel: MainViewModel, scope: CoroutineScope, scaffoldState: ScaffoldState, navController: NavController) {
     var context = LocalContext.current
+    val keyboard = LocalSoftwareKeyboardController.current
     val simpleDateFormat = SimpleDateFormat("MM-dd-yyy");
     val datetime = simpleDateFormat.format(Date())
     Row{
@@ -65,9 +70,12 @@ fun InputWeight(viewModel: MainViewModel, scope: CoroutineScope, scaffoldState: 
                     var weight = Weight(weight = viewModel.weightInput.toDouble(), date = datetime).apply {
                     }
                     viewModel.save(weight = weight)
-                    scope.launch { scaffoldState.snackbarHostState.showSnackbar("Weight: ${viewModel.weightInput} Date: $datetime") }
+                    keyboard?.hide()
+                    scope.launch { scaffoldState.snackbarHostState.showSnackbar(message = "Weight: ${viewModel.weightInput} Date: $datetime") }
                 },
-                content = { Text(text = stringResource(R.string.submit)) }
+                content = { Text(text = stringResource(R.string.submit)) },
+
+
             )
             Spacer(modifier = Modifier.height(15.dp))
             Button(
