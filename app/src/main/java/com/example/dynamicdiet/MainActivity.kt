@@ -143,11 +143,10 @@ fun DisplayWeightEntries(viewModel: MainViewModel) {
                     Spacer(modifier = Modifier.height(10.dp))
                     Text("${weightEntry.weight}lbs")
                 Column(
-                    modifier = Modifier.fillMaxWidth().fillMaxHeight(),
+                    Modifier.fillMaxWidth().fillMaxHeight(),
                     horizontalAlignment = Alignment.End
                 ) {
-                    Button(onClick = {})
-                    { Text("BUTTON") }
+
                 }
             }
         }
