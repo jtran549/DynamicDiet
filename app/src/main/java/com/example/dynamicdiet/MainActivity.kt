@@ -64,12 +64,12 @@ class MainActivity : ComponentActivity() {
 fun InputWeight(viewModel: MainViewModel, scope:CoroutineScope, scaffoldState: ScaffoldState) {
     var context = LocalContext.current
     val simpleDateFormat = SimpleDateFormat("MM-dd-yyy");
-    val datetime = simpleDateFormat.format(Date())
+    val dateTime = simpleDateFormat.format(Date())
         Row{
             Column(
                 Modifier
                     .fillMaxSize()
-                    .padding(30.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
+                    .padding(30.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Bottom) {
                 OutlinedTextField(
                     modifier = Modifier.fillMaxWidth(),
                     value = viewModel.weightInput,
@@ -80,10 +80,10 @@ fun InputWeight(viewModel: MainViewModel, scope:CoroutineScope, scaffoldState: S
                 Button (
                     modifier = Modifier.fillMaxWidth(),
                     onClick = {
-                        var weight = Weight(weight = viewModel.weightInput.toDouble(), date = datetime).apply {
+                        var weight = Weight(weight = viewModel.weightInput.toDouble(), date = dateTime).apply {
                         }
                         viewModel.save(weight = weight)
-                        scope.launch { scaffoldState.snackbarHostState.showSnackbar("Weight: ${viewModel.weightInput} Date: $datetime") }
+                        scope.launch { scaffoldState.snackbarHostState.showSnackbar("Weight: ${viewModel.weightInput} Date: $dateTime") }
                     },
                     content = {Text(text = stringResource(R.string.submit))}
                 )
