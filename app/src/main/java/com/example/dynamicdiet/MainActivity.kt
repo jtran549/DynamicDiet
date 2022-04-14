@@ -5,9 +5,11 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Call
@@ -20,13 +22,18 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.ViewModel
 import com.example.dynamicdiet.dto.Weight
 import com.example.dynamicdiet.ui.theme.DynamicDietTheme
+import com.example.dynamicdiet.ui.theme.Purple500
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
@@ -51,9 +58,8 @@ class MainActivity : ComponentActivity() {
                             ) {
                                 MainMessage(viewModel = viewModel)
                             }
-                            Surface() {
+                            Surface {
                                 MainMenuOptions()
-
                             }
                             Surface(){
                                 DisplayWeightEntries(viewModel = viewModel)
@@ -85,11 +91,7 @@ fun MainMenuOptions(){
                 .fillMaxWidth()
                 .padding(30.dp),
             horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
-                Button (
-                    modifier = Modifier.fillMaxWidth(),
-                    onClick = {},
-                    content = {Text("Log entry")}
-                )
+                CallAlertDialog()
                 Button (
                     modifier = Modifier.fillMaxWidth(),
                     onClick = {},
@@ -143,10 +145,97 @@ fun DisplayWeightEntries(viewModel: MainViewModel) {
                     Spacer(modifier = Modifier.height(10.dp))
                     Text("${weightEntry.weight}lbs")
                 Column(
-                    Modifier.fillMaxWidth().fillMaxHeight(),
+                    Modifier
+                        .fillMaxWidth()
+                        .fillMaxHeight(),
                     horizontalAlignment = Alignment.End
                 ) {
 
+                }
+            }
+        }
+    }
+}
+@Composable
+fun CallAlertDialog() {
+    val isDialogOpen = remember { mutableStateOf(false)}
+        ShowEntryLogDialogue(isDialogOpen)
+        Button(
+            onClick = {
+                isDialogOpen.value = true
+            },
+            modifier = Modifier
+                .fillMaxWidth(),
+        ) {
+            Text(text = "New entry",)
+        }
+}
+@Composable
+fun ShowEntryLogDialogue(isDialogOpen:MutableState<Boolean>){
+    if(isDialogOpen.value) {
+        Dialog(onDismissRequest = { isDialogOpen.value = false }) {
+            Surface(
+                modifier = Modifier
+                    .width(300.dp)
+                    .height(450.dp)
+                    .padding(5.dp),
+                shape = RoundedCornerShape(5.dp),
+                color = Color.White
+            ) {
+                Column(
+                    modifier = Modifier.padding(5.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    Spacer(modifier = Modifier.padding(5.dp))
+
+                    Text(
+                        text = "New entry",
+                        color = Color.Black,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 25.sp
+                    )
+
+                    Spacer(modifier = Modifier.padding(10.dp))
+
+                    OutlinedTextField(
+                        value = "",//emailVal.value,
+                        onValueChange = { },
+                        label = { Text(text = "Weight") },
+                        placeholder = { Text(text = "Weight") },
+                        singleLine = true,
+                        modifier = Modifier.fillMaxWidth(0.8f)
+                    )
+
+                    Spacer(modifier = Modifier.padding(10.dp))
+
+                    OutlinedTextField(
+                        value = "",//passwordVal.value,
+                        onValueChange = { },
+                        label = { Text(text = "Calories eaten") },
+                        placeholder = { Text(text = "Calories eaten") },
+                        singleLine = true,
+                        modifier = Modifier.fillMaxWidth(0.8f)
+                    )
+
+                    Spacer(modifier = Modifier.padding(15.dp))
+
+                    Button(
+                        onClick = {
+                            isDialogOpen.value = false
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth(0.5f)
+                            .height(60.dp)
+                            .padding(10.dp),
+                        shape = RoundedCornerShape(5.dp),
+                    ) {
+                        Text(
+                            text = "Save",
+                            color = Color.White,
+                            fontSize = 12.sp
+                        )
+                    }
                 }
             }
         }
