@@ -31,7 +31,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
 //            val weightEntries = ArrayList<Weight>()
-            viewModel.weightEntries.add(Entry(weight = 165.0, date = "03-25-2022"))
+            viewModel.weightEntries.add(Entry(weight = 165.0,calories = 2000.0, date = "03-25-2022"))
             DynamicDietTheme {
                 val scaffoldState = rememberScaffoldState()
                 val scope = rememberCoroutineScope()
@@ -83,37 +83,6 @@ fun MainMenuOptions(viewModel: MainViewModel){
                 )
         }
     }
-}
-
-@Composable
-fun InputWeight(viewModel: MainViewModel, scope:CoroutineScope, scaffoldState: ScaffoldState) {
-    var context = LocalContext.current
-    val simpleDateFormat = SimpleDateFormat("MM-dd-yyy");
-    val dateTime = simpleDateFormat.format(Date())
-        Row{
-            Column(
-                Modifier
-                    .fillMaxSize()
-                    .padding(30.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
-                OutlinedTextField(
-                    modifier = Modifier.fillMaxWidth(),
-                    value = viewModel.weightInput,
-                    onValueChange = {viewModel.onValueChange(it)},
-                    label = {Text(stringResource(R.string.weight))},
-                )
-                Spacer(modifier = Modifier.height(15.dp))
-                Button (
-                    modifier = Modifier.fillMaxWidth(),
-                    onClick = {
-                        var weight = Entry(weight = viewModel.weightInput.toDouble(), date = dateTime).apply {
-                        }
-                        viewModel.save(entry = weight)
-                        scope.launch { scaffoldState.snackbarHostState.showSnackbar("Weight: ${viewModel.weightInput} Date: $dateTime") }
-                    },
-                    content = {Text(text = stringResource(R.string.submit))}
-                )
-            }
-        }
 }
 
 @Composable
@@ -186,7 +155,7 @@ fun NewEntryDialogue(isDialogOpen:MutableState<Boolean>, viewModel: MainViewMode
 
                     OutlinedTextField(
                         value = viewModel.weightInput,
-                        onValueChange = {viewModel.onValueChange(it) },
+                        onValueChange = {viewModel.onWeightValueChange(it) },
                         label = { Text(text = "Weight") },
                         placeholder = { Text(text = "Weight") },
                         singleLine = true,
@@ -196,8 +165,8 @@ fun NewEntryDialogue(isDialogOpen:MutableState<Boolean>, viewModel: MainViewMode
                     Spacer(modifier = Modifier.padding(10.dp))
 
                     OutlinedTextField(
-                        value = viewModel.calories,
-                        onValueChange = { viewModel.onValueChange(it)},
+                        value = viewModel.caloriesInput,
+                        onValueChange = { viewModel.onCalorieValueChange(it)},
                         label = { Text(text = "Calories eaten") },
                         placeholder = { Text(text = "Calories eaten") },
                         singleLine = true,
@@ -209,7 +178,7 @@ fun NewEntryDialogue(isDialogOpen:MutableState<Boolean>, viewModel: MainViewMode
                     Button(
                         onClick = {
                             isDialogOpen.value = false
-                            var weight = Entry(weight = viewModel.weightInput.toDouble(), date = dateTime).apply {
+                            var weight = Entry(weight = viewModel.weightInput.toDouble(), calories = viewModel.caloriesInput.toDouble(),date = dateTime).apply {
                             }
                             viewModel.save(entry = weight)
                         },

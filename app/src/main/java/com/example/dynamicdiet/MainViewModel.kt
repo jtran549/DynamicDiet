@@ -14,9 +14,14 @@ class MainViewModel(var weightService: WeightService = WeightService()) : ViewMo
     var weights = ArrayList<Entry>()
     var weightEntries = ArrayList<Entry>()
     var weightInput by mutableStateOf("");
-    var calories by mutableStateOf("");
-    fun onValueChange (value: String) {
+    var caloriesInput by mutableStateOf("");
+
+    fun onWeightValueChange (value: String) {
         weightInput = value;
+    }
+
+    fun onCalorieValueChange(value: String) {
+        caloriesInput = value;
     }
 
     private var firestore : FirebaseFirestore = FirebaseFirestore.getInstance()
@@ -66,7 +71,7 @@ class MainViewModel(var weightService: WeightService = WeightService()) : ViewMo
     }
 
     fun save(entry: Entry){
-        val document = firestore.collection("weightEntries").document()
+        val document = firestore.collection("Entry").document()
         val handle = document.set(entry)
         handle.addOnSuccessListener { Log.d("Firebase", "Document saved") }
         handle.addOnFailureListener{Log.e("Firebase", "Save failed $it ")}
