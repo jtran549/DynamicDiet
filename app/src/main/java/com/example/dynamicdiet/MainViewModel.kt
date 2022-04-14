@@ -15,7 +15,7 @@ class MainViewModel(var weightService: WeightService = WeightService()) : ViewMo
     var weights = ArrayList<Weight>()
     var weightEntries = ArrayList<Weight>()
     var weightInput by mutableStateOf("");
-
+    var calories = 2000;
     fun onValueChange (value: String) {
         weightInput = value;
     }

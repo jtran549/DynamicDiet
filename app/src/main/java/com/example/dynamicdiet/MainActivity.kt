@@ -9,6 +9,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Call
+import androidx.compose.material.icons.filled.Phone
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -20,6 +23,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModel
 import com.example.dynamicdiet.dto.Weight
 import com.example.dynamicdiet.ui.theme.DynamicDietTheme
@@ -42,20 +46,55 @@ class MainActivity : ComponentActivity() {
                 val scope = rememberCoroutineScope()
                     Row (horizontalArrangement  =  Arrangement.SpaceEvenly){
                         Column {
-                            // A surface container using the 'background' color from the theme
                             Surface(
-                                //modifier = Modifier.fillMaxSize(),
                                 color = MaterialTheme.colors.background
                             ) {
-                                Scaffold(scaffoldState = scaffoldState) {
-                                    InputWeight(viewModel = viewModel, scope, scaffoldState)
-                                }
+                                MainMessage(viewModel = viewModel)
+                            }
+                            Surface() {
+                                MainMenuOptions()
+
+                            }
+                            Surface(){
                                 DisplayWeightEntries(viewModel = viewModel)
                             }
                         }
                     }
 
             }
+        }
+    }
+}
+@Composable
+fun MainMessage(viewModel: MainViewModel) {
+    Row {
+        Column (
+            Modifier
+                .fillMaxWidth()
+                .padding(30.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Bottom) {
+            Text("You need to eat ${viewModel.calories} calories today", fontSize = 30.sp)
+        }
+    }
+}
+
+@Composable
+fun MainMenuOptions(){
+    Row {
+        Column (
+            Modifier
+                .fillMaxWidth()
+                .padding(30.dp),
+            horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
+                Button (
+                    modifier = Modifier.fillMaxWidth(),
+                    onClick = {},
+                    content = {Text("Log entry")}
+                )
+                Button (
+                    modifier = Modifier.fillMaxWidth(),
+                    onClick = {},
+                    content = {Text("View goals")}
+                )
         }
     }
 }
@@ -69,7 +108,7 @@ fun InputWeight(viewModel: MainViewModel, scope:CoroutineScope, scaffoldState: S
             Column(
                 Modifier
                     .fillMaxSize()
-                    .padding(30.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Bottom) {
+                    .padding(30.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
                 OutlinedTextField(
                     modifier = Modifier.fillMaxWidth(),
                     value = viewModel.weightInput,
@@ -93,19 +132,28 @@ fun InputWeight(viewModel: MainViewModel, scope:CoroutineScope, scaffoldState: S
 
 @Composable
 fun DisplayWeightEntries(viewModel: MainViewModel) {
-    for (weightEntry in viewModel.weightEntries) {
-        Row {
-            Column (
-                Modifier
-                    .fillMaxWidth()
-                    .padding(30.dp)) {
-                Text("${weightEntry.date}: ")
-                Spacer(modifier = Modifier.height(10.dp))
-                Text("${weightEntry.weight}lbs")
+    Column(
+        Modifier
+            .fillMaxWidth()
+            .padding(30.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Bottom){
+        Text("Progress", fontSize = 20.sp)
+        for (weightEntry in viewModel.weightEntries) {
+            Row (Modifier.fillMaxWidth()){
+                    Text("${weightEntry.date}: ")
+                    Spacer(modifier = Modifier.height(10.dp))
+                    Text("${weightEntry.weight}lbs")
+                Column(
+                    modifier = Modifier.fillMaxWidth().fillMaxHeight(),
+                    horizontalAlignment = Alignment.End
+                ) {
+                    Button(onClick = {})
+                    { Text("BUTTON") }
+                }
             }
         }
     }
 }
+
 
 
 
