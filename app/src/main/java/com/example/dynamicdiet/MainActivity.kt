@@ -7,6 +7,9 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
+import com.example.dynamicdiet.dto.Weight
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -18,14 +21,12 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import com.example.dynamicdiet.dto.Entry
 import com.example.dynamicdiet.ui.theme.DynamicDietTheme
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
 import java.util.*
 
 class MainActivity : ComponentActivity() {
 
-    var viewModel = MainViewModel()
+//    var viewModel = MainViewModel()
+    lateinit var navController: NavHostController
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,6 +36,8 @@ class MainActivity : ComponentActivity() {
             DynamicDietTheme {
                 val scaffoldState = rememberScaffoldState()
                 val scope = rememberCoroutineScope()
+                navController = rememberNavController()
+                SetupNavGraph(navController = navController)
                     Row (horizontalArrangement  =  Arrangement.SpaceEvenly){
                         Column {
                             Surface(
@@ -50,7 +53,6 @@ class MainActivity : ComponentActivity() {
                             }
                         }
                     }
-
             }
         }
     }
