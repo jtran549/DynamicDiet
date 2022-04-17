@@ -1,6 +1,9 @@
 package com.example.dynamicdiet
 
 import android.util.Log
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.dynamicdiet.dto.Weight
@@ -10,11 +13,16 @@ import com.google.firebase.firestore.FirebaseFirestoreSettings
 
 class MainViewModel(var weightService: WeightService = WeightService()) : ViewModel() {
     var weights = ArrayList<Weight>()
+    var weightEntries = ArrayList<Weight>()
+    var weightInput by mutableStateOf("");
 
-    private lateinit var firestore : FirebaseFirestore
+    fun onValueChange (value: String) {
+        weightInput = value;
+    }
+
+    private var firestore : FirebaseFirestore = FirebaseFirestore.getInstance()
 
     init {
-        firestore = FirebaseFirestore.getInstance()
         firestore.firestoreSettings = FirebaseFirestoreSettings.Builder().build()
         listenToWeightEntries()
     }
@@ -41,7 +49,16 @@ class MainViewModel(var weightService: WeightService = WeightService()) : ViewMo
     }
 
     fun fetchWeightEntries(){
-
+        firestore.collection("weightEntries")
+            .get()
+            .addOnSuccessListener { result ->
+                for (document in result) {
+                    Log.d("Firebase", "${document.id} => ${document.data}")
+                }
+            }
+            .addOnFailureListener { exception ->
+                Log.d("Firebase", "Error getting documents: ", exception)
+            }
     }
 
     fun delete(id: Int){
