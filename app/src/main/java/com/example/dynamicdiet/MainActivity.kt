@@ -1,26 +1,17 @@
 package com.example.dynamicdiet
 
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.ViewModel
+import com.example.dynamicdiet.dto.User
 import com.example.dynamicdiet.dto.Weight
 import com.example.dynamicdiet.ui.theme.DynamicDietTheme
 import kotlinx.coroutines.CoroutineScope
@@ -36,7 +27,11 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
 //            val weightEntries = ArrayList<Weight>()
-            viewModel.weightEntries.add(Weight(weight = 165.0, date = "03-25-2022"))
+
+            //getting data from firebase
+
+            var user = User(currentWeight = 140, lastUpdated = "03-25-2022", age = "", firstName = "", lastName = "", userId = 1, userName = "");
+            viewModel.weightEntries.add(Weight(user.currentWeight.toDouble(), user.lastUpdated))
             DynamicDietTheme {
                 val scaffoldState = rememberScaffoldState()
                 val scope = rememberCoroutineScope()
