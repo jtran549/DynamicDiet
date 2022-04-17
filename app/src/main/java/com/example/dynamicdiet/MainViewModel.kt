@@ -1,11 +1,13 @@
 package com.example.dynamicdiet
 
+import android.content.ContentValues.TAG
 import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.example.dynamicdiet.dto.Entry
+import com.example.dynamicdiet.dto.Goal
 import com.example.dynamicdiet.service.WeightService
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreSettings
@@ -15,6 +17,8 @@ class MainViewModel(var weightService: WeightService = WeightService()) : ViewMo
     var weightEntries = ArrayList<Entry>()
     var weightInput by mutableStateOf("");
     var caloriesInput by mutableStateOf("");
+    var goalWeightInput by mutableStateOf("");
+    var ratePerWeekInput by mutableStateOf("");
 
     fun onWeightValueChange (value: String) {
         weightInput = value;
@@ -22,6 +26,14 @@ class MainViewModel(var weightService: WeightService = WeightService()) : ViewMo
 
     fun onCalorieValueChange(value: String) {
         caloriesInput = value;
+    }
+
+    fun onGoalWeightValueChange(value: String){
+        goalWeightInput = value;
+    }
+
+    fun onRatePerWeekValueChange(value: String){
+        ratePerWeekInput = value;
     }
 
     private var firestore : FirebaseFirestore = FirebaseFirestore.getInstance()
@@ -70,9 +82,16 @@ class MainViewModel(var weightService: WeightService = WeightService()) : ViewMo
         val task = document.delete();
     }
 
-    fun save(entry: Entry){
+    fun saveEntry(entry: Entry){
         val document = firestore.collection("Entry").document()
         val handle = document.set(entry)
+        handle.addOnSuccessListener { Log.d("Firebase", "Document saved") }
+        handle.addOnFailureListener{Log.e("Firebase", "Save failed $it ")}
+    }
+
+    fun saveGoal(goal : Goal){
+        val document = firestore.collection("Goal").document()
+        val handle = document.set(goal)
         handle.addOnSuccessListener { Log.d("Firebase", "Document saved") }
         handle.addOnFailureListener{Log.e("Firebase", "Save failed $it ")}
     }
