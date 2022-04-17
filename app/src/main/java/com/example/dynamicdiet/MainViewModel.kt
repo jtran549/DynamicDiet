@@ -5,20 +5,32 @@ import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.dynamicdiet.dto.Entry
 import com.example.dynamicdiet.dto.Goal
 import com.example.dynamicdiet.service.WeightService
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreSettings
+import com.google.firebase.firestore.ktx.toObject
 
 class MainViewModel(var weightService: WeightService = WeightService()) : ViewModel() {
-    var weights = ArrayList<Entry>()
-    var weightEntries = ArrayList<Entry>()
+    var goals1 = ArrayList<Goal>()
+    private var _goals : MutableLiveData<List<Goal>> = MutableLiveData<List<Goal>>()
+    private var _entries : MutableLiveData<List<Entry>> = MutableLiveData<List<Entry>>()
     var weightInput by mutableStateOf("");
     var caloriesInput by mutableStateOf("");
     var goalWeightInput by mutableStateOf("");
     var ratePerWeekInput by mutableStateOf("");
+
+
+    private var firestore : FirebaseFirestore = FirebaseFirestore.getInstance()
+
+    init {
+        firestore.firestoreSettings = FirebaseFirestoreSettings.Builder().build()
+        listenToGoals()
+        listenToWeightEntries()
+    }
 
     fun onWeightValueChange (value: String) {
         weightInput = value;
@@ -36,15 +48,29 @@ class MainViewModel(var weightService: WeightService = WeightService()) : ViewMo
         ratePerWeekInput = value;
     }
 
-    private var firestore : FirebaseFirestore = FirebaseFirestore.getInstance()
-
-    init {
-        firestore.firestoreSettings = FirebaseFirestoreSettings.Builder().build()
-        listenToWeightEntries()
+    private fun listenToGoals(){
+        firestore.collection("Goal").addSnapshotListener{
+            snapshot, e ->
+            if(e != null){
+                Log.w("Listen failed", e)
+                return@addSnapshotListener
+            }
+            snapshot?.let {
+                val allGoals = ArrayList<Goal>()
+                val documents = snapshot.documents
+                documents.forEach {
+                    val goal = it.toObject(Goal::class.java)
+                    goal?.let{
+                        allGoals.add(it)
+                    }
+                }
+                _goals.value = allGoals
+            }
+        }
     }
 
     private fun listenToWeightEntries() {
-        firestore.collection("weight").addSnapshotListener {
+        firestore.collection("Entry").addSnapshotListener {
             snapshot, e ->
             if(e != null) {
                 Log.w("Listen failed", e)
@@ -59,22 +85,9 @@ class MainViewModel(var weightService: WeightService = WeightService()) : ViewMo
                         allWeightEntries.add(it)
                     }
                 }
-                weights = allWeightEntries
+                _entries.value = allWeightEntries
             }
         }
-    }
-
-    fun fetchWeightEntries(){
-        firestore.collection("weightEntries")
-            .get()
-            .addOnSuccessListener { result ->
-                for (document in result) {
-                    Log.d("Firebase", "${document.id} => ${document.data}")
-                }
-            }
-            .addOnFailureListener { exception ->
-                Log.d("Firebase", "Error getting documents: ", exception)
-            }
     }
 
     fun delete(id: Int){
@@ -92,7 +105,16 @@ class MainViewModel(var weightService: WeightService = WeightService()) : ViewMo
     fun saveGoal(goal : Goal){
         val document = firestore.collection("Goal").document()
         val handle = document.set(goal)
+        val test = document.collection("goalWeight").document()
         handle.addOnSuccessListener { Log.d("Firebase", "Document saved") }
         handle.addOnFailureListener{Log.e("Firebase", "Save failed $it ")}
     }
+
+    internal var entries: MutableLiveData<List<Entry>>
+        get() { return _entries}
+        set(value) {_entries = value}
+
+    internal var goals: MutableLiveData<List<Goal>>
+        get() { return _goals}
+        set(value) {_goals = value}
 }

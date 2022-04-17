@@ -1,4 +1,4 @@
 package com.example.dynamicdiet.dto
 
-class Goal (var GoalWeight : Double, var WeightLossRate : Double){
+class Goal (var goalWeight : Double = 0.0, var weightLossRate : Double = 0.0){
 }

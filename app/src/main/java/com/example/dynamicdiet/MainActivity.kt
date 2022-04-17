@@ -32,7 +32,10 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
 //            val weightEntries = ArrayList<Weight>()
-            viewModel.weightEntries.add(Entry(weight = 165.0,calories = 2000.0, date = "03-25-2022"))
+            var goals = viewModel.goals
+            var entries = viewModel.entries
+            var testing = viewModel.goals1
+            val entries by viewModel.entries.observeAsState(initial = emptyList()) 
             DynamicDietTheme {
                 val scaffoldState = rememberScaffoldState()
                 val scope = rememberCoroutineScope()
@@ -246,7 +249,7 @@ fun GoalsDialog(isDialogOpen:MutableState<Boolean>, viewModel: MainViewModel){
                     Button(
                         onClick = {
                             isDialogOpen.value = false
-                            var goal = Goal(GoalWeight = viewModel.goalWeightInput.toDouble(), WeightLossRate = viewModel.ratePerWeekInput.toDouble()).apply {
+                            var goal = Goal(goalWeight = viewModel.goalWeightInput.toDouble(), weightLossRate = viewModel.ratePerWeekInput.toDouble()).apply {
                             }
                             viewModel.saveGoal(goal = goal)
                         },
@@ -275,21 +278,7 @@ fun DisplayWeightEntries(viewModel: MainViewModel) {
             .fillMaxWidth()
             .padding(30.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Bottom){
         Text("Progress", fontSize = 20.sp)
-        for (weightEntry in viewModel.weightEntries) {
-            Row (Modifier.fillMaxWidth()){
-                Text("${weightEntry.date}: ")
-                Spacer(modifier = Modifier.height(10.dp))
-                Text("${weightEntry.weight}lbs")
-                Column(
-                    Modifier
-                        .fillMaxWidth()
-                        .fillMaxHeight(),
-                    horizontalAlignment = Alignment.End
-                ) {
 
-                }
-            }
-        }
     }
 }
 
