@@ -31,11 +31,6 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-//            val weightEntries = ArrayList<Weight>()
-            var goals = viewModel.goals
-            var entries = viewModel.entries
-            var testing = viewModel.goals1
-            val entries by viewModel.entries.observeAsState(initial = emptyList()) 
             DynamicDietTheme {
                 val scaffoldState = rememberScaffoldState()
                 val scope = rememberCoroutineScope()
@@ -278,7 +273,22 @@ fun DisplayWeightEntries(viewModel: MainViewModel) {
             .fillMaxWidth()
             .padding(30.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Bottom){
         Text("Progress", fontSize = 20.sp)
+        viewModel.fetchEntries()
+        for (weightEntry in viewModel.entries) {
+            Row (Modifier.fillMaxWidth()){
+                Text("${weightEntry.date}: ")
+                Spacer(modifier = Modifier.height(10.dp))
+                Text("${weightEntry.weight}lbs")
+                Column(
+                    Modifier
+                        .fillMaxWidth()
+                        .fillMaxHeight(),
+                    horizontalAlignment = Alignment.End
+                ) {
 
+                }
+            }
+        }
     }
 }
 

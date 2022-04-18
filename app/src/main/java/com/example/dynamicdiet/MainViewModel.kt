@@ -15,9 +15,7 @@ import com.google.firebase.firestore.FirebaseFirestoreSettings
 import com.google.firebase.firestore.ktx.toObject
 
 class MainViewModel(var weightService: WeightService = WeightService()) : ViewModel() {
-    var goals1 = ArrayList<Goal>()
-    private var _goals : MutableLiveData<List<Goal>> = MutableLiveData<List<Goal>>()
-    private var _entries : MutableLiveData<List<Entry>> = MutableLiveData<List<Entry>>()
+    var entries = ArrayList<Entry>()
     var weightInput by mutableStateOf("");
     var caloriesInput by mutableStateOf("");
     var goalWeightInput by mutableStateOf("");
@@ -28,8 +26,6 @@ class MainViewModel(var weightService: WeightService = WeightService()) : ViewMo
 
     init {
         firestore.firestoreSettings = FirebaseFirestoreSettings.Builder().build()
-        listenToGoals()
-        listenToWeightEntries()
     }
 
     fun onWeightValueChange (value: String) {
@@ -48,48 +44,6 @@ class MainViewModel(var weightService: WeightService = WeightService()) : ViewMo
         ratePerWeekInput = value;
     }
 
-    private fun listenToGoals(){
-        firestore.collection("Goal").addSnapshotListener{
-            snapshot, e ->
-            if(e != null){
-                Log.w("Listen failed", e)
-                return@addSnapshotListener
-            }
-            snapshot?.let {
-                val allGoals = ArrayList<Goal>()
-                val documents = snapshot.documents
-                documents.forEach {
-                    val goal = it.toObject(Goal::class.java)
-                    goal?.let{
-                        allGoals.add(it)
-                    }
-                }
-                _goals.value = allGoals
-            }
-        }
-    }
-
-    private fun listenToWeightEntries() {
-        firestore.collection("Entry").addSnapshotListener {
-            snapshot, e ->
-            if(e != null) {
-                Log.w("Listen failed", e)
-                return@addSnapshotListener
-            }
-            snapshot?.let {
-                var allWeightEntries = ArrayList<Entry>()
-                val documents = snapshot.documents
-                documents.forEach {
-                    val weight = it.toObject(Entry::class.java)
-                    weight?.let {
-                        allWeightEntries.add(it)
-                    }
-                }
-                _entries.value = allWeightEntries
-            }
-        }
-    }
-
     fun delete(id: Int){
         val document = firestore.collection("Users").document();
         val task = document.delete();
@@ -105,16 +59,34 @@ class MainViewModel(var weightService: WeightService = WeightService()) : ViewMo
     fun saveGoal(goal : Goal){
         val document = firestore.collection("Goal").document()
         val handle = document.set(goal)
-        val test = document.collection("goalWeight").document()
         handle.addOnSuccessListener { Log.d("Firebase", "Document saved") }
         handle.addOnFailureListener{Log.e("Firebase", "Save failed $it ")}
     }
 
-    internal var entries: MutableLiveData<List<Entry>>
-        get() { return _entries}
-        set(value) {_entries = value}
+    fun fetchEntries(){
 
-    internal var goals: MutableLiveData<List<Goal>>
-        get() { return _goals}
-        set(value) {_goals = value}
+        firestore.collection("Entry").addSnapshotListener{
+                snapshot, e ->
+            if(e != null){
+                Log.w("Listen failed", e)
+                return@addSnapshotListener
+            }
+            snapshot?.let {
+                val _entries = ArrayList<Entry>()
+                val documents = snapshot.documents
+                documents.forEach {
+                    val test = it.data
+                    val weight = test?.get("weight").toString().toDouble()
+                    val calories = test?.get("calories").toString().toDouble()
+                    val date = test?.get("date").toString()
+                    _entries.add(Entry(
+                        weight = weight,
+                        calories = calories,
+                        date = date
+                    ))
+                }
+                entries = _entries
+            }
+        }
+    }
 }
