@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -23,6 +24,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.ArrayList
 
 class MainActivity : ComponentActivity() {
 
@@ -32,6 +34,8 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             DynamicDietTheme {
+                val entries by viewModel.entries.observeAsState(initial = emptyList())
+
                 val scaffoldState = rememberScaffoldState()
                 val scope = rememberCoroutineScope()
                     Row (horizontalArrangement  =  Arrangement.SpaceEvenly){
@@ -45,7 +49,7 @@ class MainActivity : ComponentActivity() {
                                 MainMenuOptions(viewModel = viewModel)
                             }
                             Surface(){
-                                DisplayWeightEntries(viewModel = viewModel)
+                                DisplayWeightEntries(viewModel = viewModel, entries)
                             }
                         }
                     }
@@ -267,28 +271,17 @@ fun GoalsDialog(isDialogOpen:MutableState<Boolean>, viewModel: MainViewModel){
 }
 
 @Composable
-fun DisplayWeightEntries(viewModel: MainViewModel) {
+fun DisplayWeightEntries(viewModel: MainViewModel, entries: List<Entry>) {
     Column(
         Modifier
             .fillMaxWidth()
             .padding(30.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Bottom){
         Text("Progress", fontSize = 20.sp)
-        viewModel.fetchEntries()
-        for (weightEntry in viewModel.entries) {
-            Row (Modifier.fillMaxWidth()){
+        for (weightEntry in entries) {
                 Text("${weightEntry.date}: ")
                 Spacer(modifier = Modifier.height(10.dp))
                 Text("${weightEntry.weight}lbs")
-                Column(
-                    Modifier
-                        .fillMaxWidth()
-                        .fillMaxHeight(),
-                    horizontalAlignment = Alignment.End
-                ) {
-
-                }
             }
-        }
     }
 }
 

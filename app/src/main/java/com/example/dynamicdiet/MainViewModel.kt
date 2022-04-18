@@ -15,7 +15,7 @@ import com.google.firebase.firestore.FirebaseFirestoreSettings
 import com.google.firebase.firestore.ktx.toObject
 
 class MainViewModel(var weightService: WeightService = WeightService()) : ViewModel() {
-    var entries = ArrayList<Entry>()
+    var entries : MutableLiveData<List<Entry>> = MutableLiveData<List<Entry>>()
     var weightInput by mutableStateOf("");
     var caloriesInput by mutableStateOf("");
     var goalWeightInput by mutableStateOf("");
@@ -26,6 +26,7 @@ class MainViewModel(var weightService: WeightService = WeightService()) : ViewMo
 
     init {
         firestore.firestoreSettings = FirebaseFirestoreSettings.Builder().build()
+        fetchEntries()
     }
 
     fun onWeightValueChange (value: String) {
@@ -85,7 +86,7 @@ class MainViewModel(var weightService: WeightService = WeightService()) : ViewMo
                         date = date
                     ))
                 }
-                entries = _entries
+                entries.value = _entries
             }
         }
     }
