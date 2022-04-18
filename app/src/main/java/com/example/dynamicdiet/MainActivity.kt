@@ -79,6 +79,7 @@ fun MainMenuOptions(viewModel: MainViewModel){
                 .padding(30.dp),
             horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
                 NewEntryButton(viewModel = viewModel)
+            Spacer(modifier = Modifier.height(10.dp))
                 GoalsButton(viewModel = viewModel)
         }
     }
