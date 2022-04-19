@@ -279,9 +279,8 @@ fun DisplayWeightEntries(viewModel: MainViewModel, entries: List<Entry>) {
             .padding(30.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Bottom){
         Text("Progress", fontSize = 20.sp)
         for (weightEntry in entries) {
-                Text("${weightEntry.date}: ")
+                Text("${weightEntry.date}: ${weightEntry.weight}lbs")
                 Spacer(modifier = Modifier.height(10.dp))
-                Text("${weightEntry.weight}lbs")
             }
     }
 }

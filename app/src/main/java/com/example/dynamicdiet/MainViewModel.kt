@@ -86,6 +86,7 @@ class MainViewModel(var weightService: WeightService = WeightService()) : ViewMo
                         date = date
                     ))
                 }
+                _entries.sortByDescending { t -> t.date }
                 entries.value = _entries
             }
         }
