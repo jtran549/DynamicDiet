@@ -1,13 +1,13 @@
 ### 1)  Introduction
 
-DynamicDiet is an app that changes your diet requirements as you progress and meet your goals. As a user, you will be able to track your daily calories and log your weight change progress. As you get closer and closer to your goals, the app will change your daily caloric intake to ensure that you reach that weight goal.
+DynamicDiet is an app that changes your diet requirements as you progress and meet your goals. As a user, you will be able to track your daily calories and log your entry change progress. As you get closer and closer to your goals, the app will change your daily caloric intake to ensure that you reach that entry goal.
 ### 2) Storyboard
 https://www.figma.com/file/osIMLBdzWFm4a5e7lnkKaY/DynamicDiet?node-id=2%3A27
 
 ### 3) Functional Requirements 
 **Requirement 01: Track calories**
 
-**Scenario**: As a user who wishes to lose weight, I want to be able to track the calories that I consume each day so that I can be below my caloric need
+**Scenario**: As a user who wishes to lose entry, I want to be able to track the calories that I consume each day so that I can be below my caloric need
 
 **Given** the user tracks their food correctly,
 
@@ -15,13 +15,13 @@ https://www.figma.com/file/osIMLBdzWFm4a5e7lnkKaY/DynamicDiet?node-id=2%3A27
 
 **Then** the result should be Chicken: 180 cals
 
-**Requirement 02: Track weight**
+**Requirement 02: Track entry**
 
-**Scenario:** As a user who wishes to lose weight, I want to be able to track my weight each morning so that I know I am making progress
+**Scenario:** As a user who wishes to lose entry, I want to be able to track my entry each morning so that I know I am making progress
 
 **Given** the user weighs themselves accurately and consistently
 
-**When** the user inputs their weight
+**When** the user inputs their entry
 
 **Then** the application will take and store the entry so the user can see their progress
 
