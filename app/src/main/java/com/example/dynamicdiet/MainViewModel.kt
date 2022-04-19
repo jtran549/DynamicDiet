@@ -17,7 +17,7 @@ import com.google.firebase.ktx.Firebase
 
 class MainViewModel(var weightService: WeightService = WeightService()) : ViewModel() {
     var entries : MutableLiveData<List<Entry>> = MutableLiveData<List<Entry>>()
-    var goal : MutableLiveData<Goal> = MutableLiveData<Goal>()
+    var goals : MutableLiveData<List<Goal>> = MutableLiveData<List<Goal>>()
     var weightInput by mutableStateOf("");
     var caloriesInput by mutableStateOf("");
     var goalWeightInput by mutableStateOf("");
@@ -29,6 +29,7 @@ class MainViewModel(var weightService: WeightService = WeightService()) : ViewMo
     init {
         firestore.firestoreSettings = FirebaseFirestoreSettings.Builder().build()
         fetchEntries()
+        fetchGoals()
     }
 
     fun onWeightValueChange (value: String) {
@@ -92,7 +93,7 @@ class MainViewModel(var weightService: WeightService = WeightService()) : ViewMo
             }
         }
     }
-    fun fetchLatestGoal(){
+    fun fetchGoals() {
         firestore.collection("Goal").addSnapshotListener{
                 snapshot, e ->
             if(e != null){
@@ -104,14 +105,14 @@ class MainViewModel(var weightService: WeightService = WeightService()) : ViewMo
                 val documents = snapshot.documents
                 documents.forEach {
                     val test = it.data
-                    val goalWeight = test?.get("goalWeight").toString().toDouble()
-                    val weightLossRate = test?.get("weightLossRate").toString().toDouble()
+                    val goalWeight = test?.get("goalWeight")
+                    val weightLossRate = test?.get("weightLossRate")
                     _goals.add(Goal(
-                        goalWeight = goalWeight,
-                        weightLossRate = weightLossRate,
+                        goalWeight = goalWeight as Double,
+                        weightLossRate = weightLossRate as Double,
                     ))
                 }
-                goal.value = _goals.last()
+                goals.value = _goals
             }
         }
     }

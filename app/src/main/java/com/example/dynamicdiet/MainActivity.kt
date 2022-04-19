@@ -11,8 +11,6 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -20,11 +18,8 @@ import androidx.compose.ui.window.Dialog
 import com.example.dynamicdiet.dto.Entry
 import com.example.dynamicdiet.dto.Goal
 import com.example.dynamicdiet.ui.theme.DynamicDietTheme
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.ArrayList
 
 class MainActivity : ComponentActivity() {
 
@@ -35,7 +30,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             DynamicDietTheme {
                 val entries by viewModel.entries.observeAsState(initial = emptyList())
-
+                val goals by viewModel.goals.observeAsState(initial = emptyList())
                 val scaffoldState = rememberScaffoldState()
                 val scope = rememberCoroutineScope()
                     Row (horizontalArrangement  =  Arrangement.SpaceEvenly){
@@ -43,10 +38,10 @@ class MainActivity : ComponentActivity() {
                             Surface(
                                 color = MaterialTheme.colors.background
                             ) {
-                                MainMessage(viewModel = viewModel)
+                                MainMessage(viewModel = viewModel, entries, goals)
                             }
                             Surface {
-                                MainMenuOptions(viewModel = viewModel)
+                                MainMenuOptions(viewModel = viewModel, entries, goals)
                             }
                             Surface(){
                                 DisplayWeightEntries(viewModel = viewModel, entries)
@@ -59,26 +54,42 @@ class MainActivity : ComponentActivity() {
     }
 }
 @Composable
-fun MainMessage(viewModel: MainViewModel) {
+fun MainMessage(viewModel: MainViewModel, entries: List<Entry>, goals: List<Goal>) {
     Row {
         Column (
             Modifier
                 .fillMaxWidth()
                 .padding(30.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Bottom) {
-            Text("You need to eat 2000 calories today", fontSize = 30.sp)
+            var calories = CalculateCaloriesNeeded(viewModel = viewModel, entries, goals)
+            Text("You need to eat ${calories} calories today", fontSize = 30.sp)
         }
     }
 }
 
+fun CalculateCaloriesNeeded(viewModel: MainViewModel, entries: List<Entry>, goals: List<Goal>): Int {
+    if(goals.count() != 0){
+        var calories: Double = 0.0
+        var goal = goals.first()
+        var bodyweight = entries.first().weight
+        var BMR = bodyweight * 12.30
+        var deficit = (goal.weightLossRate*3500)/7
+        calories = BMR - deficit
+        return calories.toInt()
+    }
+    else{
+        return 0
+    }
+}
+
 @Composable
-fun MainMenuOptions(viewModel: MainViewModel){
+fun MainMenuOptions(viewModel: MainViewModel, entries: List<Entry>, goals: List<Goal>){
     Row {
         Column (
             Modifier
                 .fillMaxWidth()
                 .padding(30.dp),
             horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
-                NewEntryButton(viewModel = viewModel)
+                NewEntryButton(viewModel = viewModel, entries, goals)
             Spacer(modifier = Modifier.height(10.dp))
                 GoalsButton(viewModel = viewModel)
         }
@@ -87,9 +98,9 @@ fun MainMenuOptions(viewModel: MainViewModel){
 
 
 @Composable
-fun NewEntryButton(viewModel : MainViewModel) {
+fun NewEntryButton(viewModel: MainViewModel, entries: List<Entry>, goals: List<Goal>) {
     val isDialogOpen = remember { mutableStateOf(false)}
-        NewEntryDialogue(isDialogOpen, viewModel)
+        NewEntryDialogue(isDialogOpen, viewModel, entries, goals)
         Button(
             onClick = {
                 isDialogOpen.value = true
@@ -118,7 +129,12 @@ fun GoalsButton(viewModel: MainViewModel) {
 }
 
 @Composable
-fun NewEntryDialogue(isDialogOpen:MutableState<Boolean>, viewModel: MainViewModel){
+fun NewEntryDialogue(
+    isDialogOpen: MutableState<Boolean>,
+    viewModel: MainViewModel,
+    entries: List<Entry>,
+    goals: List<Goal>
+){
     val simpleDateFormat = SimpleDateFormat("MM-dd-yyy");
     val dateTime = simpleDateFormat.format(Date())
     if(isDialogOpen.value) {
@@ -175,6 +191,7 @@ fun NewEntryDialogue(isDialogOpen:MutableState<Boolean>, viewModel: MainViewMode
                             var weight = Entry(weight = viewModel.weightInput.toDouble(), calories = viewModel.caloriesInput.toDouble(),date = dateTime).apply {
                             }
                             viewModel.saveEntry(entry = weight)
+                            CalculateCaloriesNeeded(viewModel = viewModel, entries = entries, goals = goals)
                         },
                         modifier = Modifier
                             .fillMaxWidth(0.5f)
