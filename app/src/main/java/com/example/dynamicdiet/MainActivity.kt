@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.dynamicdiet.dto.Weight
@@ -20,8 +21,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import com.example.dynamicdiet.dto.Entry
+import com.example.dynamicdiet.dto.Goal
 import com.example.dynamicdiet.ui.theme.DynamicDietTheme
 import java.util.*
+import kotlin.collections.ArrayList
 
 class MainActivity : ComponentActivity() {
 
@@ -31,9 +34,9 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-//            val weightEntries = ArrayList<Weight>()
-            viewModel.weightEntries.add(Entry(weight = 165.0,calories = 2000.0, date = "03-25-2022"))
             DynamicDietTheme {
+                val entries by viewModel.entries.observeAsState(initial = emptyList())
+
                 val scaffoldState = rememberScaffoldState()
                 val scope = rememberCoroutineScope()
                 navController = rememberNavController()
@@ -49,7 +52,7 @@ class MainActivity : ComponentActivity() {
                                 MainMenuOptions(viewModel = viewModel)
                             }
                             Surface(){
-                                DisplayWeightEntries(viewModel = viewModel)
+                                DisplayWeightEntries(viewModel = viewModel, entries)
                             }
                         }
                     }
@@ -78,39 +81,13 @@ fun MainMenuOptions(viewModel: MainViewModel){
                 .padding(30.dp),
             horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
                 NewEntryButton(viewModel = viewModel)
-                Button (
-                    modifier = Modifier.fillMaxWidth(),
-                    onClick = {},
-                    content = {Text("View goals")}
-                )
+            Spacer(modifier = Modifier.height(10.dp))
+                GoalsButton(viewModel = viewModel)
         }
     }
 }
 
-@Composable
-fun DisplayWeightEntries(viewModel: MainViewModel) {
-    Column(
-        Modifier
-            .fillMaxWidth()
-            .padding(30.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Bottom){
-        Text("Progress", fontSize = 20.sp)
-        for (weightEntry in viewModel.weightEntries) {
-            Row (Modifier.fillMaxWidth()){
-                    Text("${weightEntry.date}: ")
-                    Spacer(modifier = Modifier.height(10.dp))
-                    Text("${weightEntry.weight}lbs")
-                Column(
-                    Modifier
-                        .fillMaxWidth()
-                        .fillMaxHeight(),
-                    horizontalAlignment = Alignment.End
-                ) {
 
-                }
-            }
-        }
-    }
-}
 @Composable
 fun NewEntryButton(viewModel : MainViewModel) {
     val isDialogOpen = remember { mutableStateOf(false)}
@@ -125,6 +102,23 @@ fun NewEntryButton(viewModel : MainViewModel) {
             Text(text = "New entry",)
         }
 }
+
+@Composable
+fun GoalsButton(viewModel: MainViewModel) {
+    val isDialogOpen = remember{ mutableStateOf(false)}
+        GoalsDialog(isDialogOpen, viewModel)
+    Button(
+        onClick = {
+            isDialogOpen.value = true
+        },
+        modifier = Modifier
+            .fillMaxWidth(),
+    ) {
+        Text(text = "Weight loss goals",)
+    }
+
+}
+
 @Composable
 fun NewEntryDialogue(isDialogOpen:MutableState<Boolean>, viewModel: MainViewModel){
     val simpleDateFormat = SimpleDateFormat("MM-dd-yyy");
@@ -182,7 +176,7 @@ fun NewEntryDialogue(isDialogOpen:MutableState<Boolean>, viewModel: MainViewMode
                             isDialogOpen.value = false
                             var weight = Entry(weight = viewModel.weightInput.toDouble(), calories = viewModel.caloriesInput.toDouble(),date = dateTime).apply {
                             }
-                            viewModel.save(entry = weight)
+                            viewModel.saveEntry(entry = weight)
                         },
                         modifier = Modifier
                             .fillMaxWidth(0.5f)
@@ -202,8 +196,97 @@ fun NewEntryDialogue(isDialogOpen:MutableState<Boolean>, viewModel: MainViewMode
     }
 }
 
+@Composable
+fun GoalsDialog(isDialogOpen:MutableState<Boolean>, viewModel: MainViewModel){
+    val simpleDateFormat = SimpleDateFormat("MM-dd-yyy");
+    val dateTime = simpleDateFormat.format(Date())
+    if(isDialogOpen.value) {
+        Dialog(onDismissRequest = { isDialogOpen.value = false }) {
+            Surface(
+                modifier = Modifier
+                    .width(300.dp)
+                    .height(450.dp)
+                    .padding(5.dp),
+                shape = RoundedCornerShape(5.dp),
+                color = Color.White
+            ) {
+                Column(
+                    modifier = Modifier.padding(5.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    Spacer(modifier = Modifier.padding(5.dp))
 
+                    Text(
+                        text = "Weight loss goals",
+                        color = Color.Black,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 25.sp
+                    )
 
+                    Spacer(modifier = Modifier.padding(10.dp))
+
+                    OutlinedTextField(
+                        value = viewModel.goalWeightInput,
+                        onValueChange = {viewModel.onGoalWeightValueChange(it) },
+                        label = { Text(text = "Goal weight") },
+                        placeholder = { Text(text = "Goal weight") },
+                        singleLine = true,
+                        modifier = Modifier.fillMaxWidth(0.8f)
+                    )
+
+                    Spacer(modifier = Modifier.padding(10.dp))
+
+                    OutlinedTextField(
+                        value = viewModel.ratePerWeekInput,
+                        onValueChange = { viewModel.onRatePerWeekValueChange(it)},
+                        label = { Text(text = "Rate of weight loss/week") },
+                        placeholder = { Text(text = "Rate of weight loss/week") },
+                        singleLine = true,
+                        modifier = Modifier.fillMaxWidth(0.8f)
+                    )
+
+                    Spacer(modifier = Modifier.padding(15.dp))
+
+                    Button(
+                        onClick = {
+                            isDialogOpen.value = false
+                            var goal = Goal(goalWeight = viewModel.goalWeightInput.toDouble(), weightLossRate = viewModel.ratePerWeekInput.toDouble()).apply {
+                            }
+                            viewModel.saveGoal(goal = goal)
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth(0.5f)
+                            .height(60.dp)
+                            .padding(10.dp),
+                        shape = RoundedCornerShape(5.dp),
+                    ) {
+                        Text(
+                            text = "Save",
+                            color = Color.White,
+                            fontSize = 12.sp
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun DisplayWeightEntries(viewModel: MainViewModel, entries: List<Entry>) {
+    Column(
+        Modifier
+            .fillMaxWidth()
+            .padding(30.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Bottom){
+        Text("Progress", fontSize = 20.sp)
+        for (weightEntry in entries) {
+                Text("${weightEntry.date}: ")
+                Spacer(modifier = Modifier.height(10.dp))
+                Text("${weightEntry.weight}lbs")
+            }
+    }
+}
 
 
 
